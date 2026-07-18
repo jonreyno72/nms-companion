@@ -1,0 +1,73 @@
+# Deploys NMS Companion to GitHub Pages on every push to main.
+#
+# Note: this project uses pnpm (the root package.json preinstall hook
+# explicitly rejects npm/yarn). `pnpm install --frozen-lockfile` is the
+# correct equivalent of `npm ci` for a pnpm workspace.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+# Required for the deploy-pages action to write to GitHub Pages and obtain
+# an OIDC token for trusted publishing.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment; do not cancel in-progress runs so a
+# deployment already underway is never left in a half-finished state.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # ── 1. Test & Build ────────────────────────────────────────────────────────
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm --filter @workspace/nms-companion run test
+
+      - name: Build for GitHub Pages
+        run: pnpm --filter @workspace/nms-companion run build
+        env:
+          # Sets Vite's `base` option so all asset/SW/manifest paths are
+          # prefixed with /nms-companion/ in the production bundle.
+          BASE_PATH: /nms-companion/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: artifacts/nms-companion/dist/public
+
+  # ── 2. Deploy ──────────────────────────────────────────────────────────────
+  deploy:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
