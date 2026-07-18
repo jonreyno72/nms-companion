@@ -1,6 +1,7 @@
 // ─── Stable ID types ──────────────────────────────────────────────────────────
 export type GuildId = 'explorers' | 'merchants' | 'mercenaries' | 'unknown';
 export type RaceId = 'korvax' | 'gek' | 'vykeen' | 'unknown';
+export type StationType = 'space' | 'outlaw';
 
 // Rewards:
 //   storage_augmentation   = expands STARSHIP inventory
@@ -26,6 +27,8 @@ export interface Station {
   name: string;
   guildId: GuildId;
   raceId: RaceId;
+  stationType: StationType;          // 'space' (default) | 'outlaw'
+  exosuitUpgradePurchased: boolean;  // whether the exosuit upgrade chart reward has been redeemed
   favourite: boolean;
   rewards: RewardId[];
   donationItems: string[];   // free-text list (one item per entry)
@@ -40,6 +43,8 @@ export interface StationDraft {
   name: string;
   guildId: GuildId;
   raceId: RaceId;
+  stationType: StationType;
+  exosuitUpgradePurchased: boolean;
   favourite: boolean;
   rewards: RewardId[];
   donationItems: string[];
@@ -85,6 +90,13 @@ export interface FilterState {
   searchQuery: string;
   guildFilter: GuildId | 'all';
   favouritesOnly: boolean;
+  outlawOnly: boolean;
+  exosuitNotPurchasedOnly: boolean;
+}
+
+// ─── App settings (persisted separately from stations) ────────────────────────
+export interface AppSettings {
+  lastBackupAt: number | null; // Unix ms, set whenever a JSON export is taken
 }
 
 // ─── Future entity placeholders (kept visible for migration planning) ────────────

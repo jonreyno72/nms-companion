@@ -16,6 +16,7 @@ interface Props {
 export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Props) {
   const guild = GUILD_MAP[station.guildId];
   const race = RACE_MAP[station.raceId];
+  const isOutlaw = station.stationType === 'outlaw';
 
   return (
     <motion.li
@@ -23,9 +24,13 @@ export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Pro
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       layout
-      className="group flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:border-primary/50 transition-colors"
+      className={`group flex items-center gap-3 p-3 border rounded-lg transition-colors ${
+        isOutlaw
+          ? 'bg-destructive/20 border-destructive/60 hover:border-destructive'
+          : 'bg-card border-border hover:border-primary/50'
+      }`}
       role="listitem"
-      aria-label={`${station.name}, ${guild?.label || 'Unknown'} station`}
+      aria-label={`${station.name}, ${guild?.label || 'Unknown'} station${isOutlaw ? ', Outlaw Station' : ''}`}
     >
       <button
         onClick={() => onToggleFavourite(station)}
@@ -41,6 +46,11 @@ export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Pro
           <h3 className="font-semibold text-lg truncate text-foreground leading-tight">
             {station.name}
           </h3>
+          {isOutlaw && (
+            <span className="shrink-0 text-[10px] font-bold tracking-wide px-1.5 py-0.5 rounded bg-destructive/30 border border-destructive text-red-200">
+              OUTLAW
+            </span>
+          )}
         </div>
         
         <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">

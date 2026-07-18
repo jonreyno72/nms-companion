@@ -36,6 +36,8 @@ describe('CSV Export', () => {
         name: 'Alpha Station',
         guildId: 'explorers',
         raceId: 'korvax',
+        stationType: 'outlaw',
+        exosuitUpgradePurchased: true,
         favourite: true,
         rewards: ['storage_augmentation', 'cargo_bulkhead'],
         donationItems: ['Carbon', 'Pugneum'],
@@ -47,7 +49,9 @@ describe('CSV Export', () => {
 
     it('CSV output has correct header row', () => {
       const csv = stationsToCsv([]);
-      expect(csv.split('\n')[0]).toBe('ID,Name,Guild,Race,Favourite,Rewards,Donation Items,Notes,Created At,Updated At');
+      expect(csv.split('\n')[0]).toBe(
+        'ID,Name,Guild,Race,Station Type,Favourite,Exosuit Upgrade Purchased,Rewards,Donation Items,Notes,Created At,Updated At'
+      );
     });
 
     it('CSV output includes station data row with correct columns', () => {
@@ -55,6 +59,12 @@ describe('CSV Export', () => {
       const rows = csv.split('\n');
       expect(rows.length).toBe(2);
       expect(rows[1]).toContain('Alpha Station');
+    });
+
+    it('CSV output shows Outlaw Station label for outlaw stations', () => {
+      const csv = stationsToCsv(testStations);
+      const dataRow = csv.split('\n')[1];
+      expect(dataRow).toContain('Outlaw Station');
     });
 
     it('CSV output uses display labels not IDs for guild and race', () => {

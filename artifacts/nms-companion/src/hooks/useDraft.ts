@@ -15,7 +15,8 @@ export function useDraft() {
   const initNew = useCallback(() => {
     setOriginal(null);
     setDraft({
-      name: '', guildId: 'unknown', raceId: 'unknown',
+      name: '', guildId: 'unknown', raceId: 'unknown', stationType: 'space',
+      exosuitUpgradePurchased: false,
       favourite: false, rewards: [], donationItems: [], notes: '',
     });
   }, []);
@@ -26,6 +27,8 @@ export function useDraft() {
       name:          station.name,
       guildId:       station.guildId,
       raceId:        station.raceId,
+      stationType:   station.stationType ?? 'space',
+      exosuitUpgradePurchased: station.exosuitUpgradePurchased ?? false,
       favourite:     station.favourite,
       rewards:       [...station.rewards],
       donationItems: [...station.donationItems],

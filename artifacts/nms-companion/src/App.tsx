@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, KeyRound } from 'lucide-react';
 import { useStations } from '@/hooks/useStations';
 import { useDraft } from '@/hooks/useDraft';
 import { useSaveState } from '@/hooks/useSaveState';
@@ -12,6 +12,7 @@ import { FilterBar } from '@/components/stations/FilterBar';
 import { StationList } from '@/components/stations/StationList';
 import { StationForm } from '@/components/stations/StationForm';
 import { BackupPanel } from '@/components/backup/BackupPanel';
+import { IconLegendModal } from '@/components/stations/IconLegendModal';
 
 function App() {
   // Force dark mode
@@ -20,7 +21,11 @@ function App() {
   }, []);
 
   const [view, setView] = useState<'stations' | 'backup'>('stations');
-  const [filters, setFilters] = useState<FilterState>({ searchQuery: '', guildFilter: 'all', favouritesOnly: false });
+  const [legendOpen, setLegendOpen] = useState(false);
+  const [filters, setFilters] = useState<FilterState>({
+    searchQuery: '', guildFilter: 'all', favouritesOnly: false,
+    outlawOnly: false, exosuitNotPurchasedOnly: false,
+  });
   
   const { stations, loading, reload } = useStations();
   const { draft, original, initNew, initEdit, update, cancel, buildStation } = useDraft();
@@ -33,13 +38,15 @@ function App() {
   const handleSave = () => {
     const station = buildStation();
     if (!station) return;
-    
+
     save(async () => {
       await stationRepository.save(station);
       await reload();
-      // Keep form open but update original to the saved station so it switches from "Add" to "Edit" mode
-      initEdit(station);
     });
+    // Saving is debounced/async (see useSaveState), but the form should close
+    // immediately back to the station list, as requested — the save itself
+    // still completes in the background.
+    cancel();
   };
 
   const handleDelete = async (id: string) => {
@@ -72,6 +79,13 @@ function App() {
             />
           </div>
           <button
+            onClick={() => setLegendOpen(true)}
+            className="touch-target bg-input border border-border text-muted-foreground px-3 rounded-lg font-medium hover:text-foreground hover:border-primary/50 transition-colors flex items-center gap-1.5 shrink-0"
+            aria-label="Show icon key"
+          >
+            <KeyRound className="w-4 h-4" /> <span className="hidden sm:inline">Key</span>
+          </button>
+          <button
             onClick={initNew}
             className="touch-target bg-primary text-primary-foreground px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center gap-1.5 shrink-0 shadow-sm"
           >
@@ -79,6 +93,10 @@ function App() {
           </button>
         </div>
         <FilterBar filters={filters} onChange={setFilters} />
+        <p className="text-xs text-muted-foreground -mt-1">
+          Showing <span className="font-semibold text-foreground">{filteredStations.length}</span> of{' '}
+          <span className="font-semibold text-foreground">{stations.length}</span> stations
+        </p>
       </div>
       <div className="flex-1 overflow-y-auto p-4 safe-area-bottom">
         {loading ? (
@@ -130,13 +148,16 @@ function App() {
   );
 
   return (
-    <AppShell
-      view={view}
-      onViewChange={v => { setView(v); if(v === 'backup') cancel(); }}
-      leftPanel={leftPanel}
-      rightPanel={rightPanel}
-      isRightPanelOpen={isFormOpen && view === 'stations'}
-    />
+    <>
+      <AppShell
+        view={view}
+        onViewChange={v => { setView(v); if(v === 'backup') cancel(); }}
+        leftPanel={leftPanel}
+        rightPanel={rightPanel}
+        isRightPanelOpen={isFormOpen && view === 'stations'}
+      />
+      <IconLegendModal open={legendOpen} onClose={() => setLegendOpen(false)} />
+    </>
   );
 }
 

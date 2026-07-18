@@ -1,9 +1,9 @@
 import { openDB, type IDBPDatabase } from 'idb';
-import type { Station } from '@/types';
+import type { Station, AppSettings } from '@/types';
 
 // Database name and version — bump DB_VERSION when adding new stores/indexes
 const DB_NAME    = 'nms-companion';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 export interface NMSDatabase {
   stations: {
@@ -14,6 +14,10 @@ export interface NMSDatabase {
       'by-guild':     string;
       'by-favourite': number;    // 0 | 1 (IDB doesn't index booleans natively)
     };
+  };
+  settings: {
+    key: string;
+    value: AppSettings[keyof AppSettings];
   };
   // Future stores added here as new DB_VERSION increments:
   // ships:       { key: string; value: Ship; }
@@ -37,10 +41,14 @@ export function getDb(): Promise<IDBPDatabase<NMSDatabase>> {
           stationsStore.createIndex('by-guild',     'guildId',   { unique: false });
           stationsStore.createIndex('by-favourite', 'favourite', { unique: false });
         }
-        // v1 → v2 (future example):
-        // if (oldVersion < 2) {
-        //   db.createObjectStore('ships', { keyPath: 'id' });
-        // }
+        // v1 → v2: add settings store (key/value) for app-level settings such
+        // as lastBackupAt. Existing stations are left as-is; missing
+        // stationType / exosuitUpgradePurchased fields are defaulted at read
+        // time in stationRepository, not migrated in place, to keep this
+        // upgrade fast and side-effect free.
+        if (oldVersion < 2) {
+          db.createObjectStore('settings');
+        }
       },
     });
   }

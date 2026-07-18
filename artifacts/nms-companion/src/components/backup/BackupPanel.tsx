@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
-import { Download, Upload, FileSpreadsheet } from 'lucide-react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { Download, Upload, FileSpreadsheet, Clock } from 'lucide-react';
 import { useBackup } from '@/hooks/useBackup';
+import { settingsRepository } from '@/db/repositories/settingsRepository';
 import { ImportPreviewPanel } from './ImportPreview';
 import type { ImportPreview } from '@/types';
 
@@ -10,6 +11,18 @@ export function BackupPanel() {
   
   const [preview, setPreview] = useState<ImportPreview | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [lastBackupAt, setLastBackupAt] = useState<number | null>(null);
+
+  const refreshLastBackupAt = useCallback(async () => {
+    setLastBackupAt(await settingsRepository.getLastBackupAt());
+  }, []);
+
+  useEffect(() => { refreshLastBackupAt(); }, [refreshLastBackupAt]);
+
+  const handleExportJson = async () => {
+    await exportJson();
+    await refreshLastBackupAt();
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -64,11 +77,21 @@ export function BackupPanel() {
         </div>
       )}
 
+      <div className="flex items-center gap-2 px-4 py-3 bg-input border border-border rounded-xl text-sm">
+        <Clock className="w-4 h-4 text-muted-foreground shrink-0" />
+        <span className="text-muted-foreground">Last Backup (JSON export):</span>
+        <span className="font-medium text-foreground">
+          {lastBackupAt
+            ? new Date(lastBackupAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })
+            : 'Never'}
+        </span>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
         {/* Export JSON */}
         <button
-          onClick={exportJson}
+          onClick={handleExportJson}
           className="flex flex-col items-start text-left p-6 bg-card border border-border rounded-2xl hover:border-primary/50 hover:bg-muted/30 transition-all group"
         >
           <div className="p-3 bg-primary/10 text-primary rounded-xl mb-4 group-hover:scale-110 transition-transform">

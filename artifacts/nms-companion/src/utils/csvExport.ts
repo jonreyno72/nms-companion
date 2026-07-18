@@ -14,7 +14,7 @@ export function escapeCsvField(value: string): string {
 }
 
 const CSV_HEADERS = [
-  'ID', 'Name', 'Guild', 'Race', 'Favourite',
+  'ID', 'Name', 'Guild', 'Race', 'Station Type', 'Favourite', 'Exosuit Upgrade Purchased',
   'Rewards', 'Donation Items', 'Notes', 'Created At', 'Updated At',
 ];
 
@@ -28,7 +28,9 @@ export function stationsToCsv(stations: Station[]): string {
       s.name,
       GUILD_MAP[s.guildId]?.label ?? s.guildId,
       RACE_MAP[s.raceId]?.label ?? s.raceId,
+      s.stationType === 'outlaw' ? 'Outlaw Station' : 'Space Station',
       s.favourite ? 'Yes' : 'No',
+      s.exosuitUpgradePurchased ? 'Yes' : 'No',
       s.rewards.map(r => REWARD_MAP[r]?.label ?? r).join('; '),
       s.donationItems.join('; '),
       s.notes,
