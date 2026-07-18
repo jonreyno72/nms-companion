@@ -71,13 +71,19 @@ export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Pro
         )}
       </div>
 
-      <div className="flex items-center gap-1 shrink-0 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+      {/* Action buttons are always visible.
+          The previous sm:opacity-0 / sm:group-hover:opacity-100 pattern made
+          these invisible on iPads and other touch devices because CSS :hover
+          never fires persistently on touch, so the reveal never triggered. */}
+      <div className="flex items-center gap-1 shrink-0">
         <button
           onClick={() => onEdit(station)}
           className="touch-target text-muted-foreground hover:text-primary transition-colors"
           aria-label="Edit station"
         >
-          <Edit2 className="w-5 h-5" />
+          {/* Explicit width/height and stroke so the icon is visible in every
+              browser/PWA context without relying on Tailwind class inference. */}
+          <Edit2 width={20} height={20} stroke="currentColor" />
         </button>
         <button
           onClick={() => {
@@ -88,7 +94,7 @@ export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Pro
           className="touch-target text-muted-foreground hover:text-destructive transition-colors"
           aria-label="Delete station"
         >
-          <Trash2 className="w-5 h-5" />
+          <Trash2 width={20} height={20} stroke="currentColor" />
         </button>
       </div>
     </motion.li>
