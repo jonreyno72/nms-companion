@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "NMS Companion"
+version = "1.0.0"
+id = "artifacts/nms-companion"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24402
+
+[services.development]
+run = "pnpm --filter @workspace/nms-companion run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nms-companion", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/nms-companion/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24402"
+BASE_PATH = "/"
