@@ -1,0 +1,278 @@
+Build an iPad Progressive Web App
+
+I want you to build a modern Progressive Web App (PWA) called NMS Companion.
+
+The app is for No Man’s Sky and will be used exclusively on an iPad in landscape mode.
+
+The app must work completely offline after installation.
+
+Use:
+
+* React
+* TypeScript
+* Vite
+* IndexedDB for storage
+* Modern responsive CSS
+* Installable as a PWA
+
+Do not use a backend or cloud database.
+
+⸻
+
+Purpose
+
+The app is a personal companion used to remember useful space stations.
+
+The design should be clean, modern and simple.
+
+Think of it as a native iPad app rather than a web page.
+
+Dark theme by default.
+
+⸻
+
+Home Screen
+
+The first screen should display:
+
+Title:
+
+“NMS Companion”
+
+Below that:
+
+Stations
+
+A button labelled:
+
+* Add Station
+
+A search box.
+
+Filter buttons:
+
+All
+
+Explorers
+
+Merchants
+
+Mercenaries
+
+Favourites
+
+Below that display a scrollable list of stations.
+
+⸻
+
+Station Record
+
+Each station contains:
+
+Station Name
+
+Guild
+
+Possible values:
+
+Explorer
+
+Merchant
+
+Mercenary
+
+Unknown
+
+Race
+
+Possible values:
+
+Korvax
+
+Gek
+
+Vy’keen
+
+Unknown
+
+Favourite
+
+True / False
+
+Rewards
+
+Allow multiple selections from:
+
+Salvaged Frigate Module
+
+Cargo Bulkhead
+
+Storage Augmentation
+
+Starship Storage
+
+Multi-tool Expansion Slot
+
+Exosuit Upgrade Chart
+
+S-Class Upgrade Modules
+
+Other
+
+Donation Items
+
+Multiple text entries
+
+Notes
+
+Free text
+
+⸻
+
+Station List
+
+Each row should display
+
+Station name
+
+Guild icon
+
+Favourite icon if applicable
+
+Small icons representing rewards.
+
+Do NOT require opening a station just to see why it was saved.
+
+⸻
+
+Searching
+
+Searching should work by
+
+Station name
+
+Guild
+
+Race
+
+Reward
+
+Favourite
+
+Allow multiple filters at once.
+
+⸻
+
+Editing
+
+Users must be able to
+
+Create station
+
+Edit station
+
+Delete station
+
+Cancel edits
+
+⸻
+
+Storage
+
+Automatically save everything into IndexedDB.
+
+No manual Save button required.
+
+⸻
+
+Backup
+
+Include a Backup section.
+
+Buttons:
+
+Export JSON
+
+Import JSON
+
+Export CSV
+
+The JSON should be human readable.
+
+The import should validate the file before replacing data.
+
+⸻
+
+User Interface
+
+Large touch-friendly buttons.
+
+Large fonts.
+
+Comfortable spacing.
+
+Optimised for iPad landscape.
+
+Dark mode.
+
+Smooth transitions.
+
+Rounded corners.
+
+Native-app appearance.
+
+⸻
+
+Architecture
+
+Use reusable React components.
+
+Use TypeScript interfaces.
+
+Keep the data model extendable because future versions will add:
+
+Ships
+
+Freighters
+
+Settlements
+
+Bases
+
+Recipes
+
+Autophage
+
+Multi-tools
+
+Do not hard-code anything that would make expansion difficult.
+
+⸻
+
+Code Quality
+
+Use modern React best practices.
+
+Keep components small.
+
+Comment important code.
+
+Organise folders cleanly.
+
+Avoid unnecessary dependencies.
+
+⸻
+
+Deliverables
+
+Produce a complete working project.
+
+The project should run immediately with
+
+npm install
+
+followed by
+
+npm run dev
+
+The app should be installable as a Progressive Web App on an iPad
