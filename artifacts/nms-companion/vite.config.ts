@@ -28,6 +28,10 @@ export default defineConfig({
         background_color: '#0a0e1a',
         display: 'standalone',
         orientation: 'landscape',
+        // start_url and scope must match the deployment sub-path so the PWA
+        // installs and launches correctly from /nms-companion/ on GitHub Pages.
+        start_url: basePath,
+        scope: basePath,
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
@@ -36,6 +40,10 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Ensure the service worker handles navigation requests under the
+        // sub-path correctly (relevant when the PWA is launched standalone).
+        navigateFallback: `${basePath}index.html`,
+        navigateFallbackAllowlist: [new RegExp(`^${basePath}`)],
         runtimeCaching: [],
       },
     }),
