@@ -3,6 +3,7 @@ import type { ImportWarning, Station } from '@/types';
 
 const VALID_GUILD_IDS = ['explorers', 'merchants', 'mercenaries', 'unknown'] as const;
 const VALID_RACE_IDS  = ['korvax', 'gek', 'vykeen', 'unknown'] as const;
+const VALID_STATION_TYPES = ['space', 'outlaw'] as const;
 const VALID_REWARD_IDS = [
   'salvaged_frigate_module', 'cargo_bulkhead', 'storage_augmentation',
   'exosuit_expansion_unit', 'multitool_expansion_slot',
@@ -16,6 +17,9 @@ export const RawStationSchema = z.object({
   name:          z.string().min(1),
   guildId:       z.string(),
   raceId:        z.string(),
+  // Both new in this version — optional so backups taken before this update still import cleanly.
+  stationType:              z.string().optional(),
+  exosuitUpgradePurchased:  z.boolean().optional(),
   favourite:     z.boolean(),
   rewards:       z.array(z.string()),
   donationItems: z.array(z.string()).default([]),
@@ -96,6 +100,8 @@ export function validateAndCoerceStations(
       name:          raw.name,
       guildId:       VALID_GUILD_IDS.includes(raw.guildId as any) ? raw.guildId as any : 'unknown',
       raceId:        VALID_RACE_IDS.includes(raw.raceId as any) ? raw.raceId as any : 'unknown',
+      stationType:   VALID_STATION_TYPES.includes(raw.stationType as any) ? raw.stationType as any : 'space',
+      exosuitUpgradePurchased: raw.exosuitUpgradePurchased ?? false,
       favourite:     raw.favourite,
       rewards:       validatedRewards as any[],
       donationItems: raw.donationItems,

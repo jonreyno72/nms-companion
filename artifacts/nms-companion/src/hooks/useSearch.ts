@@ -12,6 +12,12 @@ export function useSearch(stations: Station[], filters: FilterState): Station[] 
       // Favourites filter
       if (filters.favouritesOnly && !station.favourite) return false;
 
+      // Outlaw-only filter
+      if (filters.outlawOnly && station.stationType !== 'outlaw') return false;
+
+      // Exosuit-not-purchased filter
+      if (filters.exosuitNotPurchasedOnly && station.exosuitUpgradePurchased) return false;
+
       // Guild filter
       if (filters.guildFilter !== 'all' && station.guildId !== filters.guildFilter) return false;
 

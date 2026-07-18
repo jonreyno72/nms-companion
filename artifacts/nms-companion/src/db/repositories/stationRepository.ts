@@ -5,17 +5,35 @@
 import { getDb } from '@/db/db';
 import type { Station } from '@/types';
 
+/**
+ * Stations saved before stationType / exosuitUpgradePurchased existed won't
+ * have those fields in IndexedDB. Default them on read rather than running a
+ * one-off migration, so old records display correctly without a write pass.
+ */
+function withDefaults(station: Station): Station {
+  // Cast: records saved before these fields existed won't actually have them
+  // in IndexedDB at runtime, even though the Station type says they're required.
+  const raw = station as Partial<Pick<Station, 'stationType' | 'exosuitUpgradePurchased'>> & Station;
+  return {
+    ...raw,
+    stationType: raw.stationType ?? 'space',
+    exosuitUpgradePurchased: raw.exosuitUpgradePurchased ?? false,
+  };
+}
+
 export const stationRepository = {
   /** Return all stations sorted by name. */
   async getAll(): Promise<Station[]> {
     const db = await getDb();
-    return db.getAllFromIndex('stations', 'by-name');
+    const stations = await db.getAllFromIndex('stations', 'by-name');
+    return stations.map(withDefaults);
   },
 
   /** Return a single station by ID, or undefined. */
   async getById(id: string): Promise<Station | undefined> {
     const db = await getDb();
-    return db.get('stations', id);
+    const station = await db.get('stations', id);
+    return station ? withDefaults(station) : undefined;
   },
 
   /** Insert or update a station (upsert). */
@@ -50,6 +68,7 @@ export const stationRepository = {
   /** Return all stations as a raw array (for export). */
   async exportAll(): Promise<Station[]> {
     const db = await getDb();
-    return db.getAll('stations');
+    const stations = await db.getAll('stations');
+    return stations.map(withDefaults);
   },
 };

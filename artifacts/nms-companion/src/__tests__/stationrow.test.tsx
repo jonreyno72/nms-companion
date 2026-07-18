@@ -35,6 +35,8 @@ const STATION: Station = {
   name: 'Hepta Station',
   guildId: 'explorers',
   raceId: 'korvax',
+  stationType: 'space',
+  exosuitUpgradePurchased: false,
   favourite: false,
   rewards: [],
   donationItems: [],
@@ -129,5 +131,23 @@ describe('StationRow — Edit and Delete icon visibility', () => {
       .getByRole('button', { name: 'Edit station' })
       .closest('div');
     expect(container?.className ?? '').not.toMatch(/\bopacity-0\b/);
+  });
+
+  // ── Outlaw station styling ────────────────────────────────────────────────
+
+  it('shows an OUTLAW badge for outlaw stations', () => {
+    render(<StationRow station={{ ...STATION, stationType: 'outlaw' }} {...handlers} />);
+    expect(screen.getByText('OUTLAW')).toBeInTheDocument();
+  });
+
+  it('does not show an OUTLAW badge for space stations', () => {
+    render(<StationRow station={STATION} {...handlers} />);
+    expect(screen.queryByText('OUTLAW')).not.toBeInTheDocument();
+  });
+
+  it('applies the destructive row styling for outlaw stations', () => {
+    render(<StationRow station={{ ...STATION, stationType: 'outlaw' }} {...handlers} />);
+    const row = screen.getByRole('listitem');
+    expect(row.className).toMatch(/bg-destructive/);
   });
 });

@@ -5,6 +5,7 @@ import type { Station, StationDraft, SaveState } from '@/types';
 import { GUILDS } from '@/constants/guilds';
 import { RACES } from '@/constants/races';
 import { REWARDS } from '@/constants/rewards';
+import { STATION_TYPES } from '@/constants/stationTypes';
 import { isDuplicateName } from '@/utils/normalise';
 import { DuplicateWarning } from './DuplicateWarning';
 import { SaveIndicator } from '../ui/SaveIndicator';
@@ -52,18 +53,44 @@ export function StationForm({
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
         
-        {/* Name */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Station Name</label>
-          <input
-            type="text"
-            value={draft.name}
-            onChange={e => onFieldChange('name', e.target.value)}
-            className="w-full bg-input border border-border rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-            placeholder="e.g. Odyalutai Terminus"
-            autoFocus
-          />
-          <DuplicateWarning visible={isDuplicate} />
+        {/* Name & Station Type */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="space-y-2 sm:w-1/2">
+            <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Station Name</label>
+            <input
+              type="text"
+              value={draft.name}
+              onChange={e => onFieldChange('name', e.target.value)}
+              className="w-full bg-input border border-border rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              placeholder="e.g. Odyalutai Terminus"
+              autoFocus
+            />
+            <DuplicateWarning visible={isDuplicate} />
+          </div>
+          <div className="space-y-2 sm:flex-1">
+            <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Station Type</label>
+            <div className="grid grid-cols-2 gap-2">
+              {STATION_TYPES.map(t => {
+                const isSelected = draft.stationType === t.id;
+                const isOutlaw = t.id === 'outlaw';
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => onFieldChange('stationType', t.id)}
+                    className={`px-3 py-2 rounded-lg border text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
+                      isSelected
+                        ? isOutlaw
+                          ? 'bg-destructive/20 border-destructive text-destructive'
+                          : 'bg-primary/20 border-primary text-primary'
+                        : 'bg-input border-border text-muted-foreground hover:border-primary/50'
+                    }`}
+                  >
+                    {t.icon} {t.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {/* Guild & Race */}
@@ -120,9 +147,23 @@ export function StationForm({
           />
         </label>
 
+        {/* Exosuit Upgrade Purchased */}
+        <label className="flex items-center justify-between p-4 bg-input border border-border rounded-lg cursor-pointer hover:border-primary/50 transition-colors">
+          <span className="font-medium">Exosuit Upgrade Purchased</span>
+          <div className={`relative w-12 h-6 rounded-full transition-colors ${draft.exosuitUpgradePurchased ? 'bg-accent' : 'bg-muted'}`}>
+            <div className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${draft.exosuitUpgradePurchased ? 'translate-x-6' : 'translate-x-0'}`} />
+          </div>
+          <input
+            type="checkbox"
+            className="sr-only"
+            checked={draft.exosuitUpgradePurchased}
+            onChange={e => onFieldChange('exosuitUpgradePurchased', e.target.checked)}
+          />
+        </label>
+
         {/* Rewards */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Mission Rewards</label>
+          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Guild Redeem Rewards</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {REWARDS.map(r => {
               const isSelected = draft.rewards.includes(r.id);
@@ -151,7 +192,7 @@ export function StationForm({
 
         {/* Donation Items */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Guild Donation Requests</label>
+          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Guild Donations</label>
           <div className="space-y-2">
             {draft.donationItems.map((item, idx) => (
               <div key={idx} className="flex gap-2">

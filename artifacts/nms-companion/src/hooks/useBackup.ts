@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { stationRepository } from '@/db/repositories/stationRepository';
+import { settingsRepository } from '@/db/repositories/settingsRepository';
 import { BackupFileSchema, validateAndCoerceStations } from '@/schemas/backup.schema';
 import { toBackupJson } from '@/utils/jsonBackup';
 import { stationsToCsv, downloadFile } from '@/utils/csvExport';
@@ -10,6 +11,10 @@ export function useBackup() {
     const stations = await stationRepository.exportAll();
     const json = toBackupJson(stations);
     downloadFile(json, `nms-companion-backup-${Date.now()}.json`, 'application/json');
+    // JSON export is the canonical, restorable backup — record when it happened.
+    // CSV export (below) is a spreadsheet copy, not a restorable backup, so it
+    // does not update this timestamp.
+    await settingsRepository.setLastBackupAt(Date.now());
   }, []);
 
   const exportCsv = useCallback(async () => {

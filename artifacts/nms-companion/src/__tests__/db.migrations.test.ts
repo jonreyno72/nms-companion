@@ -11,7 +11,8 @@ beforeEach(() => {
 });
 
 const makeStation = (id: string, name: string): Station => ({
-  id, name, guildId: 'unknown', raceId: 'unknown', favourite: false, rewards: [], donationItems: [], notes: '', createdAt: 0, updatedAt: 0
+  id, name, guildId: 'unknown', raceId: 'unknown', stationType: 'space',
+  exosuitUpgradePurchased: false, favourite: false, rewards: [], donationItems: [], notes: '', createdAt: 0, updatedAt: 0
 });
 
 describe('Database Migrations & Repositories', () => {
@@ -85,5 +86,23 @@ describe('Database Migrations & Repositories', () => {
     
     const retrieved = await stationRepository.getById('999');
     expect(retrieved).toBeUndefined();
+  });
+
+  it('defaults stationType and exosuitUpgradePurchased for legacy records missing those fields', async () => {
+    // Simulate a station saved before these fields existed by casting past the type.
+    const legacy = { ...makeStation('legacy-1', 'Old Record') } as any;
+    delete legacy.stationType;
+    delete legacy.exosuitUpgradePurchased;
+    await stationRepository.save(legacy);
+
+    const retrieved = await stationRepository.getById('legacy-1');
+    expect(retrieved?.stationType).toBe('space');
+    expect(retrieved?.exosuitUpgradePurchased).toBe(false);
+
+    const all = await stationRepository.getAll();
+    expect(all.find(s => s.id === 'legacy-1')?.stationType).toBe('space');
+
+    const exported = await stationRepository.exportAll();
+    expect(exported.find(s => s.id === 'legacy-1')?.stationType).toBe('space');
   });
 });
