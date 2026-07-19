@@ -15,11 +15,12 @@ describe('Filtering (useSearch)', () => {
     { id: '3', name: 'Gamma', guildId: 'mercenaries', raceId: 'vykeen', stationType: 'space', economyType: 'unknown', wealth: 0, exosuitUpgradePurchased: false, favourite: true, rewards: ['sclass_upgrade_modules'], donationItems: [], notes: '', createdAt: 0, updatedAt: 0 },
     { id: '4', name: 'Delta Terminus', guildId: 'explorers', raceId: 'unknown', stationType: 'space', economyType: 'power_generation', wealth: 0, exosuitUpgradePurchased: true, favourite: false, rewards: [], donationItems: ['Carbon'], notes: '', createdAt: 0, updatedAt: 0 },
     { id: '5', name: 'Epsilon', guildId: 'unknown', raceId: 'unknown', stationType: 'outlaw', economyType: 'unknown', wealth: 1, exosuitUpgradePurchased: false, favourite: false, rewards: [], donationItems: [], notes: 'has exotic', createdAt: 0, updatedAt: 0 },
+    { id: '6', name: 'Zeta Outpost', guildId: 'unknown', raceId: 'unknown', stationType: 'outlaw', economyType: 'unknown', wealth: 4, exosuitUpgradePurchased: false, favourite: false, rewards: [], donationItems: [], notes: '', createdAt: 0, updatedAt: 0 },
   ];
 
   it('returns all stations when no filters applied', () => {
     const { result } = renderHook(() => useSearch(stations, baseFilters));
-    expect(result.current.length).toBe(5);
+    expect(result.current.length).toBe(6);
   });
 
   it('filters by guild — only explorers returned', () => {
@@ -34,17 +35,17 @@ describe('Filtering (useSearch)', () => {
 
   it('filters by outlaw stations only', () => {
     const { result } = renderHook(() => useSearch(stations, { ...baseFilters, outlawOnly: true }));
-    expect(result.current.map(s => s.id)).toEqual(['2', '5']);
+    expect(result.current.map(s => s.id)).toEqual(['2', '5', '6']);
   });
 
   it('filters by exosuit upgrade not purchased', () => {
     const { result } = renderHook(() => useSearch(stations, { ...baseFilters, exosuitNotPurchasedOnly: true }));
-    expect(result.current.map(s => s.id)).toEqual(['2', '3', '5']);
+    expect(result.current.map(s => s.id)).toEqual(['2', '3', '5', '6']);
   });
 
   it('combines outlaw-only and exosuit-not-purchased filters', () => {
     const { result } = renderHook(() => useSearch(stations, { ...baseFilters, outlawOnly: true, exosuitNotPurchasedOnly: true }));
-    expect(result.current.map(s => s.id)).toEqual(['2', '5']);
+    expect(result.current.map(s => s.id)).toEqual(['2', '5', '6']);
   });
 
   it('text search by station name (normalised)', () => {
@@ -97,6 +98,11 @@ describe('Filtering (useSearch)', () => {
   it('filters by wealth exact match — 1 star', () => {
     const { result } = renderHook(() => useSearch(stations, { ...baseFilters, wealthFilter: '1' }));
     expect(result.current.map(s => s.id)).toEqual(['5']);
+  });
+
+  it('filters by wealth exact match — Outlaw System (4)', () => {
+    const { result } = renderHook(() => useSearch(stations, { ...baseFilters, wealthFilter: '4' }));
+    expect(result.current.map(s => s.id)).toEqual(['6']);
   });
 
   it('filters by wealth "no information set"', () => {

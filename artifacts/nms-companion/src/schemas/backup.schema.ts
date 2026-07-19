@@ -25,7 +25,7 @@ export const RawStationSchema = z.object({
   stationType:              z.string().optional(),
   exosuitUpgradePurchased:  z.boolean().optional(),
   economyType:              z.string().optional(),
-  wealth:                   z.number().int().min(0).max(3).optional(),
+  wealth:                   z.number().int().min(0).max(4).optional(),
   favourite:     z.boolean(),
   rewards:       z.array(z.string()),
   donationItems: z.array(z.string()).default([]),

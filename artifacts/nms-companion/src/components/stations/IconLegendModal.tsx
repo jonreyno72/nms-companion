@@ -98,7 +98,7 @@ export function IconLegendModal({ open, onClose }: Props) {
             </h3>
             <div className="flex items-start gap-2 text-sm">
               <span className="w-6 text-center shrink-0 text-accent">★★★</span>
-              <span>1 to 3 stars, set per-station on the edit screen. Optional — stations with nothing set show no stars, and can be filtered separately via "No information set". Full reference for which in-game label maps to which star rating is available via the (?) button next to Wealth on the edit screen.</span>
+              <span>1 to 3 stars, or 💀 for an Outlaw System (no star rating), set per-station on the edit screen. Optional — stations with nothing set show no stars, and can be filtered separately via "No information set". Full reference for which in-game label maps to which rating is available via the (?) button next to Wealth on the edit screen.</span>
             </div>
           </div>
 

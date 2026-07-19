@@ -11,6 +11,7 @@ const TIER_COLOR: Record<number, string> = {
   1: 'text-red-300',
   2: 'text-accent',
   3: 'text-green-300',
+  4: 'text-muted-foreground',
 };
 
 export function WealthReferencePopover({ open, onClose }: Props) {
@@ -40,16 +41,18 @@ export function WealthReferencePopover({ open, onClose }: Props) {
           {WEALTH_TIERS.map(tier => (
             <div key={tier.stars} className="p-4">
               <div className={`font-semibold text-sm flex items-center gap-2 ${TIER_COLOR[tier.stars]}`}>
-                {'★'.repeat(tier.stars)} {tier.label}
+                {tier.icon ?? '★'.repeat(tier.stars)} {tier.label}
               </div>
               <div className="text-xs text-muted-foreground mb-2">{tier.tier}</div>
-              <div className="flex flex-wrap gap-1.5">
-                {tier.terms.map(term => (
-                  <span key={term} className="text-xs px-2 py-0.5 rounded-md bg-input border border-border">
-                    {term}
-                  </span>
-                ))}
-              </div>
+              {tier.terms.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {tier.terms.map(term => (
+                    <span key={term} className="text-xs px-2 py-0.5 rounded-md bg-input border border-border">
+                      {term}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

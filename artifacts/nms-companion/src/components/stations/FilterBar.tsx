@@ -97,6 +97,7 @@ export function FilterBar({ filters, onChange }: Props) {
         <option value="3">★★★ (3)</option>
         <option value="2">★★☆ (2)</option>
         <option value="1">★☆☆ (1)</option>
+        <option value="4">💀 Outlaw System</option>
         <option value="none">No information set</option>
       </select>
     </div>

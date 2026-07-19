@@ -186,4 +186,37 @@ describe('StationRow — Edit and Delete icon visibility', () => {
     render(<StationRow station={STATION} {...handlers} />);
     expect(screen.queryByLabelText(/Wealth:/)).not.toBeInTheDocument();
   });
+
+  it('shows the skull indicator for an Outlaw System wealth rating', () => {
+    render(<StationRow station={{ ...STATION, wealth: 4 }} {...handlers} />);
+    expect(screen.getByLabelText('Wealth: Outlaw System')).toBeInTheDocument();
+  });
+
+  it('does not show star wealth alongside the Outlaw System skull', () => {
+    render(<StationRow station={{ ...STATION, wealth: 4 }} {...handlers} />);
+    expect(screen.queryByLabelText(/Wealth: \d star/)).not.toBeInTheDocument();
+  });
+
+  // ── Outlaw stations hide Guild/Race ─────────────────────────────────────────
+
+  it('shows guild and race tags for a Space Station', () => {
+    render(<StationRow station={{ ...STATION, stationType: 'space' }} {...handlers} />);
+    expect(screen.getByText(/Explorers/)).toBeInTheDocument();
+  });
+
+  it('hides the guild tag for an Outlaw Station', () => {
+    render(<StationRow station={{ ...STATION, stationType: 'outlaw' }} {...handlers} />);
+    expect(screen.queryByText(/Explorers/)).not.toBeInTheDocument();
+  });
+
+  it('hides the race tag for an Outlaw Station', () => {
+    render(<StationRow station={{ ...STATION, stationType: 'outlaw', raceId: 'korvax' }} {...handlers} />);
+    expect(screen.queryByText(/Korvax/)).not.toBeInTheDocument();
+  });
+
+  it('accessible label does not reference guild for an Outlaw Station', () => {
+    render(<StationRow station={{ ...STATION, stationType: 'outlaw' }} {...handlers} />);
+    const row = screen.getByRole('listitem');
+    expect(row.getAttribute('aria-label')).toBe('Hepta Station, Outlaw Station');
+  });
 });

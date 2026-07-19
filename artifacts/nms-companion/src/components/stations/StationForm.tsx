@@ -99,45 +99,51 @@ export function StationForm({
           </div>
         </div>
 
-        {/* Guild & Race */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Dominant Guild</label>
-            <div className="grid grid-cols-2 gap-2">
-              {GUILDS.map(g => (
-                <button
-                  key={g.id}
-                  onClick={() => onFieldChange('guildId', g.id)}
-                  className={`px-3 py-2 rounded-lg border text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
-                    draft.guildId === g.id 
-                      ? 'bg-primary/20 border-primary text-primary' 
-                      : 'bg-input border-border text-muted-foreground hover:border-primary/50'
-                  }`}
-                >
-                  {g.icon} {g.label}
-                </button>
-              ))}
+        {/* Guild & Race — not applicable to Outlaw Stations */}
+        {draft.stationType === 'outlaw' ? (
+          <p className="text-sm text-muted-foreground bg-input border border-border rounded-lg px-4 py-3">
+            Dominant Guild and System Race don't apply to Outlaw Stations.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Dominant Guild</label>
+              <div className="grid grid-cols-2 gap-2">
+                {GUILDS.map(g => (
+                  <button
+                    key={g.id}
+                    onClick={() => onFieldChange('guildId', g.id)}
+                    className={`px-3 py-2 rounded-lg border text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
+                      draft.guildId === g.id 
+                        ? 'bg-primary/20 border-primary text-primary' 
+                        : 'bg-input border-border text-muted-foreground hover:border-primary/50'
+                    }`}
+                  >
+                    {g.icon} {g.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">System Race</label>
+              <div className="grid grid-cols-2 gap-2">
+                {RACES.map(r => (
+                  <button
+                    key={r.id}
+                    onClick={() => onFieldChange('raceId', r.id)}
+                    className={`px-3 py-2 rounded-lg border text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
+                      draft.raceId === r.id 
+                        ? 'bg-primary/20 border-primary text-primary' 
+                        : 'bg-input border-border text-muted-foreground hover:border-primary/50'
+                    }`}
+                  >
+                    {r.icon} {r.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">System Race</label>
-            <div className="grid grid-cols-2 gap-2">
-              {RACES.map(r => (
-                <button
-                  key={r.id}
-                  onClick={() => onFieldChange('raceId', r.id)}
-                  className={`px-3 py-2 rounded-lg border text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
-                    draft.raceId === r.id 
-                      ? 'bg-primary/20 border-primary text-primary' 
-                      : 'bg-input border-border text-muted-foreground hover:border-primary/50'
-                  }`}
-                >
-                  {r.icon} {r.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+        )}
 
         {/* Economy: Type & Wealth */}
         <div className="space-y-2">
@@ -183,9 +189,9 @@ export function StationForm({
                     key={n}
                     onClick={() => onFieldChange('wealth', n)}
                     aria-label={`Set wealth to ${n} star${n > 1 ? 's' : ''}`}
-                    aria-pressed={draft.wealth >= n}
+                    aria-pressed={draft.wealth >= 1 && draft.wealth <= 3 && draft.wealth >= n}
                     className={`w-10 h-10 rounded-lg border text-lg flex items-center justify-center transition-colors ${
-                      draft.wealth >= n
+                      draft.wealth >= 1 && draft.wealth <= 3 && draft.wealth >= n
                         ? 'bg-accent/10 border-accent/50 text-accent'
                         : 'bg-input border-border text-muted-foreground hover:border-accent/50'
                     }`}
@@ -193,6 +199,19 @@ export function StationForm({
                     ★
                   </button>
                 ))}
+                <button
+                  onClick={() => onFieldChange('wealth', 4)}
+                  aria-label="Mark as Outlaw System (no star rating)"
+                  aria-pressed={draft.wealth === 4}
+                  title="Outlaw System"
+                  className={`w-10 h-10 rounded-lg border text-lg flex items-center justify-center transition-colors ${
+                    draft.wealth === 4
+                      ? 'bg-muted-foreground/10 border-muted-foreground text-foreground'
+                      : 'bg-input border-border text-muted-foreground hover:border-muted-foreground/60'
+                  }`}
+                >
+                  💀
+                </button>
                 {draft.wealth > 0 && (
                   <button
                     onClick={() => onFieldChange('wealth', 0)}

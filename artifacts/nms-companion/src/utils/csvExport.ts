@@ -32,7 +32,7 @@ export function stationsToCsv(stations: Station[]): string {
       RACE_MAP[s.raceId]?.label ?? s.raceId,
       s.stationType === 'outlaw' ? 'Outlaw Station' : 'Space Station',
       ECONOMY_TYPE_MAP[s.economyType]?.label ?? s.economyType,
-      s.wealth > 0 ? String(s.wealth) : 'Not set',
+      s.wealth === 4 ? 'Outlaw System' : s.wealth > 0 ? String(s.wealth) : 'Not set',
       s.favourite ? 'Yes' : 'No',
       s.exosuitUpgradePurchased ? 'Yes' : 'No',
       s.rewards.map(r => REWARD_MAP[r]?.label ?? r).join('; '),
