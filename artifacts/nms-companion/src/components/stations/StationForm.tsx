@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Plus, Trash2, Bookmark } from 'lucide-react';
+import { X, Plus, Trash2, Bookmark, HelpCircle } from 'lucide-react';
 import type { Station, StationDraft, SaveState, WealthRating } from '@/types';
 import { GUILDS } from '@/constants/guilds';
 import { RACES } from '@/constants/races';
@@ -10,6 +10,8 @@ import { ECONOMY_TYPES } from '@/constants/economyTypes';
 import { isDuplicateName } from '@/utils/normalise';
 import { DuplicateWarning } from './DuplicateWarning';
 import { SaveIndicator } from '../ui/SaveIndicator';
+import { WealthReferencePopover } from './WealthReferencePopover';
+import { EconomyTypeReferencePopover } from './EconomyTypeReferencePopover';
 
 interface Props {
   draft: StationDraft | null;
@@ -24,6 +26,9 @@ interface Props {
 export function StationForm({
   draft, original, saveState, existingNames, onFieldChange, onSave, onCancel
 }: Props) {
+  const [showWealthRef, setShowWealthRef] = useState(false);
+  const [showEconomyRef, setShowEconomyRef] = useState(false);
+
   if (!draft) return null;
 
   const isDuplicate = useMemo(() => 
@@ -139,7 +144,17 @@ export function StationForm({
           <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Economy</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</label>
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                Type
+                <button
+                  type="button"
+                  onClick={() => setShowEconomyRef(true)}
+                  aria-label="Show economy type reference"
+                  className="w-[18px] h-[18px] rounded-full bg-muted border border-border text-muted-foreground hover:text-foreground hover:border-primary flex items-center justify-center"
+                >
+                  <HelpCircle className="w-3 h-3" />
+                </button>
+              </label>
               <select
                 value={draft.economyType}
                 onChange={e => onFieldChange('economyType', e.target.value as StationDraft['economyType'])}
@@ -149,10 +164,19 @@ export function StationForm({
                   <option key={e.id} value={e.id}>{e.icon} {e.label}</option>
                 ))}
               </select>
-              <p className="text-xs text-muted-foreground">Full list of meanings is in the Key on the main page.</p>
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Wealth</label>
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                Wealth
+                <button
+                  type="button"
+                  onClick={() => setShowWealthRef(true)}
+                  aria-label="Show wealth reference"
+                  className="w-[18px] h-[18px] rounded-full bg-muted border border-border text-muted-foreground hover:text-foreground hover:border-primary flex items-center justify-center"
+                >
+                  <HelpCircle className="w-3 h-3" />
+                </button>
+              </label>
               <div className="flex items-center gap-2 h-[46px]">
                 {([1, 2, 3] as WealthRating[]).map(n => (
                   <button
@@ -181,6 +205,9 @@ export function StationForm({
             </div>
           </div>
         </div>
+
+        <EconomyTypeReferencePopover open={showEconomyRef} onClose={() => setShowEconomyRef(false)} />
+        <WealthReferencePopover open={showWealthRef} onClose={() => setShowWealthRef(false)} />
 
         {/* Favourite */}
         <label className="flex items-center justify-between p-4 bg-input border border-border rounded-lg cursor-pointer hover:border-primary/50 transition-colors">

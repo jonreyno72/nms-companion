@@ -83,8 +83,8 @@ export function IconLegendModal({ open, onClose }: Props) {
                   <span className="w-6 text-center shrink-0">{e.icon}</span>
                   <span>
                     {e.label}
-                    {e.id !== 'unknown' && (
-                      <span className="block text-xs text-muted-foreground">{e.description}</span>
+                    {e.themes.length > 0 && (
+                      <span className="block text-xs text-muted-foreground">{e.themes.join(', ')}</span>
                     )}
                   </span>
                 </div>
@@ -98,7 +98,7 @@ export function IconLegendModal({ open, onClose }: Props) {
             </h3>
             <div className="flex items-start gap-2 text-sm">
               <span className="w-6 text-center shrink-0 text-accent">★★★</span>
-              <span>1 to 3 stars, set per-station on the edit screen. Optional — stations with nothing set show no stars, and can be filtered separately via "No information set".</span>
+              <span>1 to 3 stars, set per-station on the edit screen. Optional — stations with nothing set show no stars, and can be filtered separately via "No information set". Full reference for which in-game label maps to which star rating is available via the (?) button next to Wealth on the edit screen.</span>
             </div>
           </div>
 

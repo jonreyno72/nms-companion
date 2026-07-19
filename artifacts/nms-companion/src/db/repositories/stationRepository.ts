@@ -4,21 +4,29 @@
  */
 import { getDb } from '@/db/db';
 import type { Station } from '@/types';
+import { ECONOMY_TYPE_MAP } from '@/constants/economyTypes';
 
 /**
  * Stations saved before stationType / exosuitUpgradePurchased existed won't
  * have those fields in IndexedDB. Default them on read rather than running a
  * one-off migration, so old records display correctly without a write pass.
+ *
+ * Also handles the Economy Type correction (12 invented categories -> the
+ * real 7): any station already saved with one of the dropped values
+ * (e.g. 'commercial', 'industrial') falls back to 'unknown' on read, same as
+ * a missing/unset value, rather than showing a value the dropdown no longer
+ * offers.
  */
 function withDefaults(station: Station): Station {
   // Cast: records saved before these fields existed won't actually have them
   // in IndexedDB at runtime, even though the Station type says they're required.
   const raw = station as Partial<Pick<Station, 'stationType' | 'exosuitUpgradePurchased' | 'economyType' | 'wealth'>> & Station;
+  const economyType = raw.economyType && ECONOMY_TYPE_MAP[raw.economyType] ? raw.economyType : 'unknown';
   return {
     ...raw,
     stationType: raw.stationType ?? 'space',
     exosuitUpgradePurchased: raw.exosuitUpgradePurchased ?? false,
-    economyType: raw.economyType ?? 'unknown',
+    economyType,
     wealth: raw.wealth ?? 0,
   };
 }

@@ -118,7 +118,7 @@ describe('Backup Validation', () => {
     expect(warnings).toHaveLength(0);
   });
 
-  it('falls back to unknown economyType if the value is not one of the 13 valid types', () => {
+  it('falls back to unknown economyType if the value is not one of the 7 valid types', () => {
     const s = { ...validStation, economyType: 'space_pirates' };
     const { stations } = validateAndCoerceStations([s]);
     expect(stations[0].economyType).toBe('unknown');

@@ -13,7 +13,7 @@ describe('Filtering (useSearch)', () => {
     { id: '1', name: 'Alpha', guildId: 'explorers', raceId: 'korvax', stationType: 'space', economyType: 'mining', wealth: 2, exosuitUpgradePurchased: true, favourite: true, rewards: ['storage_augmentation'], donationItems: [], notes: '', createdAt: 0, updatedAt: 0 },
     { id: '2', name: 'Beta', guildId: 'merchants', raceId: 'gek', stationType: 'outlaw', economyType: 'trading', wealth: 3, exosuitUpgradePurchased: false, favourite: false, rewards: ['cargo_bulkhead'], donationItems: [], notes: 'great economy', createdAt: 0, updatedAt: 0 },
     { id: '3', name: 'Gamma', guildId: 'mercenaries', raceId: 'vykeen', stationType: 'space', economyType: 'unknown', wealth: 0, exosuitUpgradePurchased: false, favourite: true, rewards: ['sclass_upgrade_modules'], donationItems: [], notes: '', createdAt: 0, updatedAt: 0 },
-    { id: '4', name: 'Delta Terminus', guildId: 'explorers', raceId: 'unknown', stationType: 'space', economyType: 'agricultural', wealth: 0, exosuitUpgradePurchased: true, favourite: false, rewards: [], donationItems: ['Carbon'], notes: '', createdAt: 0, updatedAt: 0 },
+    { id: '4', name: 'Delta Terminus', guildId: 'explorers', raceId: 'unknown', stationType: 'space', economyType: 'power_generation', wealth: 0, exosuitUpgradePurchased: true, favourite: false, rewards: [], donationItems: ['Carbon'], notes: '', createdAt: 0, updatedAt: 0 },
     { id: '5', name: 'Epsilon', guildId: 'unknown', raceId: 'unknown', stationType: 'outlaw', economyType: 'unknown', wealth: 1, exosuitUpgradePurchased: false, favourite: false, rewards: [], donationItems: [], notes: 'has exotic', createdAt: 0, updatedAt: 0 },
   ];
 
