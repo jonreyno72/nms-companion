@@ -5,9 +5,8 @@ const VALID_GUILD_IDS = ['explorers', 'merchants', 'mercenaries', 'unknown'] as 
 const VALID_RACE_IDS  = ['korvax', 'gek', 'vykeen', 'unknown'] as const;
 const VALID_STATION_TYPES = ['space', 'outlaw'] as const;
 const VALID_ECONOMY_TYPES = [
-  'unknown', 'advanced_materials', 'scientific', 'technology', 'manufacturing',
-  'mining', 'power_generation', 'trading', 'commercial', 'industrial',
-  'construction', 'high_tech', 'agricultural',
+  'unknown', 'mining', 'manufacturing', 'technology', 'power_generation',
+  'trading', 'advanced_materials', 'scientific',
 ] as const;
 const VALID_REWARD_IDS = [
   'salvaged_frigate_module', 'cargo_bulkhead', 'storage_augmentation',

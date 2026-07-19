@@ -4,18 +4,13 @@ export type RaceId = 'korvax' | 'gek' | 'vykeen' | 'unknown';
 export type StationType = 'space' | 'outlaw';
 export type EconomyTypeId =
   | 'unknown'
-  | 'advanced_materials'
-  | 'scientific'
-  | 'technology'
-  | 'manufacturing'
   | 'mining'
+  | 'manufacturing'
+  | 'technology'
   | 'power_generation'
   | 'trading'
-  | 'commercial'
-  | 'industrial'
-  | 'construction'
-  | 'high_tech'
-  | 'agricultural';
+  | 'advanced_materials'
+  | 'scientific';
 /** 0 = not set. 1-3 = wealth rating. Kept as a plain number rather than a
  * boolean tuple so it can be compared/filtered like the star count it represents. */
 export type WealthRating = 0 | 1 | 2 | 3;
@@ -37,7 +32,8 @@ export type RewardId =
 export interface GuildDef  { id: GuildId;  label: string; icon: string; color: string; }
 export interface RaceDef   { id: RaceId;   label: string; icon: string; }
 export interface RewardDef { id: RewardId; label: string; shortLabel: string; icon: string; }
-export interface EconomyTypeDef { id: EconomyTypeId; label: string; icon: string; description: string; }
+export interface EconomyTypeDef { id: EconomyTypeId; label: string; icon: string; themes: string[]; }
+export interface WealthTierDef { stars: 1 | 2 | 3; label: string; tier: string; terms: string[]; }
 
 // ─── Core entity ────────────────────────────────────────────────────────────────
 export interface Station {
@@ -46,7 +42,7 @@ export interface Station {
   guildId: GuildId;
   raceId: RaceId;
   stationType: StationType;          // 'space' (default) | 'outlaw'
-  economyType: EconomyTypeId;        // 'unknown' (default) or one of the 12 economy types
+  economyType: EconomyTypeId;        // 'unknown' (default) or one of the 7 economy types
   wealth: WealthRating;              // 0 (not set) to 3
   exosuitUpgradePurchased: boolean;  // whether the exosuit upgrade chart reward has been redeemed
   favourite: boolean;

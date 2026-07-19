@@ -117,4 +117,18 @@ describe('Database Migrations & Repositories', () => {
     expect(retrieved?.economyType).toBe('unknown');
     expect(retrieved?.wealth).toBe(0);
   });
+
+  it('falls back to unknown for a station saved with a since-removed economy type category', async () => {
+    // Simulates a station saved while the app briefly had 12 economy type
+    // options (Commercial/Industrial/Construction/High Tech/Agricultural),
+    // before it was corrected to the real 7 categories.
+    const legacy = { ...makeStation('legacy-3', 'Farm World'), economyType: 'agricultural' } as any;
+    await stationRepository.save(legacy);
+
+    const retrieved = await stationRepository.getById('legacy-3');
+    expect(retrieved?.economyType).toBe('unknown');
+
+    const all = await stationRepository.getAll();
+    expect(all.find(s => s.id === 'legacy-3')?.economyType).toBe('unknown');
+  });
 });
