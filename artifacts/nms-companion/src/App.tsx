@@ -75,7 +75,7 @@ function App() {
               value={filters.searchQuery}
               onChange={e => setFilters(f => ({ ...f, searchQuery: e.target.value }))}
               placeholder="Search stations..."
-              className="w-full bg-input border border-border rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full h-11 bg-input border border-border rounded-lg pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
           <button
@@ -110,16 +110,6 @@ function App() {
           />
         )}
       </div>
-      {/* Mobile Add Button (floating) - only visible if form closed */}
-      {!isFormOpen && (
-        <button
-          onClick={initNew}
-          className="lg:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg flex items-center justify-center hover:bg-primary/90 transition-colors z-50 safe-area-bottom"
-          aria-label="Add Station"
-        >
-          <Plus className="w-6 h-6" />
-        </button>
-      )}
     </>
   );
 
