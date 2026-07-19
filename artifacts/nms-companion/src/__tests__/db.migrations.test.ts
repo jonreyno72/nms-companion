@@ -12,6 +12,7 @@ beforeEach(() => {
 
 const makeStation = (id: string, name: string): Station => ({
   id, name, guildId: 'unknown', raceId: 'unknown', stationType: 'space',
+  economyType: 'unknown', wealth: 0,
   exosuitUpgradePurchased: false, favourite: false, rewards: [], donationItems: [], notes: '', createdAt: 0, updatedAt: 0
 });
 
@@ -104,5 +105,16 @@ describe('Database Migrations & Repositories', () => {
 
     const exported = await stationRepository.exportAll();
     expect(exported.find(s => s.id === 'legacy-1')?.stationType).toBe('space');
+  });
+
+  it('defaults economyType and wealth for legacy records missing those fields', async () => {
+    const legacy = { ...makeStation('legacy-2', 'Older Record') } as any;
+    delete legacy.economyType;
+    delete legacy.wealth;
+    await stationRepository.save(legacy);
+
+    const retrieved = await stationRepository.getById('legacy-2');
+    expect(retrieved?.economyType).toBe('unknown');
+    expect(retrieved?.wealth).toBe(0);
   });
 });

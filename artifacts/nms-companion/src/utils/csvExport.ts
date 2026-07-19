@@ -2,6 +2,7 @@ import type { Station } from '@/types';
 import { GUILD_MAP } from '@/constants/guilds';
 import { RACE_MAP } from '@/constants/races';
 import { REWARD_MAP } from '@/constants/rewards';
+import { ECONOMY_TYPE_MAP } from '@/constants/economyTypes';
 
 /** Escapes a single CSV field value per RFC 4180. */
 export function escapeCsvField(value: string): string {
@@ -14,7 +15,8 @@ export function escapeCsvField(value: string): string {
 }
 
 const CSV_HEADERS = [
-  'ID', 'Name', 'Guild', 'Race', 'Station Type', 'Favourite', 'Exosuit Upgrade Purchased',
+  'ID', 'Name', 'Guild', 'Race', 'Station Type', 'Economy Type', 'Wealth',
+  'Favourite', 'Exosuit Upgrade Purchased',
   'Rewards', 'Donation Items', 'Notes', 'Created At', 'Updated At',
 ];
 
@@ -29,6 +31,8 @@ export function stationsToCsv(stations: Station[]): string {
       GUILD_MAP[s.guildId]?.label ?? s.guildId,
       RACE_MAP[s.raceId]?.label ?? s.raceId,
       s.stationType === 'outlaw' ? 'Outlaw Station' : 'Space Station',
+      ECONOMY_TYPE_MAP[s.economyType]?.label ?? s.economyType,
+      s.wealth > 0 ? String(s.wealth) : 'Not set',
       s.favourite ? 'Yes' : 'No',
       s.exosuitUpgradePurchased ? 'Yes' : 'No',
       s.rewards.map(r => REWARD_MAP[r]?.label ?? r).join('; '),

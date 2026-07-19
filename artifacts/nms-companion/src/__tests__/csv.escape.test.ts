@@ -37,6 +37,8 @@ describe('CSV Export', () => {
         guildId: 'explorers',
         raceId: 'korvax',
         stationType: 'outlaw',
+        economyType: 'mining',
+        wealth: 2,
         exosuitUpgradePurchased: true,
         favourite: true,
         rewards: ['storage_augmentation', 'cargo_bulkhead'],
@@ -50,7 +52,7 @@ describe('CSV Export', () => {
     it('CSV output has correct header row', () => {
       const csv = stationsToCsv([]);
       expect(csv.split('\n')[0]).toBe(
-        'ID,Name,Guild,Race,Station Type,Favourite,Exosuit Upgrade Purchased,Rewards,Donation Items,Notes,Created At,Updated At'
+        'ID,Name,Guild,Race,Station Type,Economy Type,Wealth,Favourite,Exosuit Upgrade Purchased,Rewards,Donation Items,Notes,Created At,Updated At'
       );
     });
 
@@ -65,6 +67,26 @@ describe('CSV Export', () => {
       const csv = stationsToCsv(testStations);
       const dataRow = csv.split('\n')[1];
       expect(dataRow).toContain('Outlaw Station');
+    });
+
+    it('CSV output shows economy type label', () => {
+      const csv = stationsToCsv(testStations);
+      const dataRow = csv.split('\n')[1];
+      expect(dataRow).toContain('Mining');
+    });
+
+    it('CSV output shows numeric wealth when set', () => {
+      const csv = stationsToCsv(testStations);
+      const dataRow = csv.split('\n')[1];
+      const cells = dataRow.split(',');
+      // Wealth is the 7th column (ID, Name, Guild, Race, Station Type, Economy Type, Wealth, ...)
+      expect(cells[6]).toBe('2');
+    });
+
+    it('CSV output shows "Not set" for wealth when unset', () => {
+      const csv = stationsToCsv([{ ...testStations[0], wealth: 0 }]);
+      const dataRow = csv.split('\n')[1];
+      expect(dataRow).toContain('Not set');
     });
 
     it('CSV output uses display labels not IDs for guild and race', () => {

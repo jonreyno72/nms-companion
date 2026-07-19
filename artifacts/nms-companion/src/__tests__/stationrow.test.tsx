@@ -36,6 +36,8 @@ const STATION: Station = {
   guildId: 'explorers',
   raceId: 'korvax',
   stationType: 'space',
+  economyType: 'unknown',
+  wealth: 0,
   exosuitUpgradePurchased: false,
   favourite: false,
   rewards: [],
@@ -149,5 +151,39 @@ describe('StationRow — Edit and Delete icon visibility', () => {
     render(<StationRow station={{ ...STATION, stationType: 'outlaw' }} {...handlers} />);
     const row = screen.getByRole('listitem');
     expect(row.className).toMatch(/bg-destructive/);
+  });
+
+  // ── Favourite marker (bookmark, replaces the previous star) ────────────────
+
+  it('favourite toggle button has an accessible label', () => {
+    render(<StationRow station={STATION} {...handlers} />);
+    expect(screen.getByLabelText('Add to favourites')).toBeInTheDocument();
+  });
+
+  it('favourite toggle label flips when the station is already a favourite', () => {
+    render(<StationRow station={{ ...STATION, favourite: true }} {...handlers} />);
+    expect(screen.getByLabelText('Remove from favourites')).toBeInTheDocument();
+  });
+
+  // ── Economy type & wealth ───────────────────────────────────────────────────
+
+  it('shows an economy type tag when set', () => {
+    render(<StationRow station={{ ...STATION, economyType: 'mining' }} {...handlers} />);
+    expect(screen.getByText(/Mining/)).toBeInTheDocument();
+  });
+
+  it('does not show an economy type tag when unknown', () => {
+    render(<StationRow station={STATION} {...handlers} />);
+    expect(screen.queryByText('Unknown')).not.toBeInTheDocument();
+  });
+
+  it('shows wealth stars when wealth is set', () => {
+    render(<StationRow station={{ ...STATION, wealth: 2 }} {...handlers} />);
+    expect(screen.getByLabelText('Wealth: 2 stars')).toBeInTheDocument();
+  });
+
+  it('shows no wealth indicator when wealth is not set', () => {
+    render(<StationRow station={STATION} {...handlers} />);
+    expect(screen.queryByLabelText(/Wealth:/)).not.toBeInTheDocument();
   });
 });

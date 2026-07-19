@@ -13,11 +13,13 @@ import type { Station } from '@/types';
 function withDefaults(station: Station): Station {
   // Cast: records saved before these fields existed won't actually have them
   // in IndexedDB at runtime, even though the Station type says they're required.
-  const raw = station as Partial<Pick<Station, 'stationType' | 'exosuitUpgradePurchased'>> & Station;
+  const raw = station as Partial<Pick<Station, 'stationType' | 'exosuitUpgradePurchased' | 'economyType' | 'wealth'>> & Station;
   return {
     ...raw,
     stationType: raw.stationType ?? 'space',
     exosuitUpgradePurchased: raw.exosuitUpgradePurchased ?? false,
+    economyType: raw.economyType ?? 'unknown',
+    wealth: raw.wealth ?? 0,
   };
 }
 

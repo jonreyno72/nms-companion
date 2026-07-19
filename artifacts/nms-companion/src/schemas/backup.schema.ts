@@ -4,6 +4,11 @@ import type { ImportWarning, Station } from '@/types';
 const VALID_GUILD_IDS = ['explorers', 'merchants', 'mercenaries', 'unknown'] as const;
 const VALID_RACE_IDS  = ['korvax', 'gek', 'vykeen', 'unknown'] as const;
 const VALID_STATION_TYPES = ['space', 'outlaw'] as const;
+const VALID_ECONOMY_TYPES = [
+  'unknown', 'advanced_materials', 'scientific', 'technology', 'manufacturing',
+  'mining', 'power_generation', 'trading', 'commercial', 'industrial',
+  'construction', 'high_tech', 'agricultural',
+] as const;
 const VALID_REWARD_IDS = [
   'salvaged_frigate_module', 'cargo_bulkhead', 'storage_augmentation',
   'exosuit_expansion_unit', 'multitool_expansion_slot',
@@ -17,9 +22,11 @@ export const RawStationSchema = z.object({
   name:          z.string().min(1),
   guildId:       z.string(),
   raceId:        z.string(),
-  // Both new in this version — optional so backups taken before this update still import cleanly.
+  // All optional so backups taken before each of these fields existed still import cleanly.
   stationType:              z.string().optional(),
   exosuitUpgradePurchased:  z.boolean().optional(),
+  economyType:              z.string().optional(),
+  wealth:                   z.number().int().min(0).max(3).optional(),
   favourite:     z.boolean(),
   rewards:       z.array(z.string()),
   donationItems: z.array(z.string()).default([]),
@@ -101,6 +108,8 @@ export function validateAndCoerceStations(
       guildId:       VALID_GUILD_IDS.includes(raw.guildId as any) ? raw.guildId as any : 'unknown',
       raceId:        VALID_RACE_IDS.includes(raw.raceId as any) ? raw.raceId as any : 'unknown',
       stationType:   VALID_STATION_TYPES.includes(raw.stationType as any) ? raw.stationType as any : 'space',
+      economyType:   VALID_ECONOMY_TYPES.includes(raw.economyType as any) ? raw.economyType as any : 'unknown',
+      wealth:        (raw.wealth ?? 0) as any,
       exosuitUpgradePurchased: raw.exosuitUpgradePurchased ?? false,
       favourite:     raw.favourite,
       rewards:       validatedRewards as any[],
