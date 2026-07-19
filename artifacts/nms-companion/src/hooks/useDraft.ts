@@ -16,6 +16,7 @@ export function useDraft() {
     setOriginal(null);
     setDraft({
       name: '', guildId: 'unknown', raceId: 'unknown', stationType: 'space',
+      economyType: 'unknown', wealth: 0,
       exosuitUpgradePurchased: false,
       favourite: false, rewards: [], donationItems: [], notes: '',
     });
@@ -28,6 +29,8 @@ export function useDraft() {
       guildId:       station.guildId,
       raceId:        station.raceId,
       stationType:   station.stationType ?? 'space',
+      economyType:   station.economyType ?? 'unknown',
+      wealth:        station.wealth ?? 0,
       exosuitUpgradePurchased: station.exosuitUpgradePurchased ?? false,
       favourite:     station.favourite,
       rewards:       [...station.rewards],

@@ -99,4 +99,34 @@ describe('Backup Validation', () => {
     });
     expect(parsed.stations[0].notes).toBe('');
   });
+
+  it('defaults economyType to unknown for backups taken before this field existed', () => {
+    const { stations } = validateAndCoerceStations([validStation]);
+    expect(stations[0].economyType).toBe('unknown');
+  });
+
+  it('defaults wealth to 0 for backups taken before this field existed', () => {
+    const { stations } = validateAndCoerceStations([validStation]);
+    expect(stations[0].wealth).toBe(0);
+  });
+
+  it('accepts a valid economyType and wealth from a newer backup', () => {
+    const s = { ...validStation, economyType: 'mining', wealth: 3 };
+    const { stations, warnings } = validateAndCoerceStations([s]);
+    expect(stations[0].economyType).toBe('mining');
+    expect(stations[0].wealth).toBe(3);
+    expect(warnings).toHaveLength(0);
+  });
+
+  it('falls back to unknown economyType if the value is not one of the 13 valid types', () => {
+    const s = { ...validStation, economyType: 'space_pirates' };
+    const { stations } = validateAndCoerceStations([s]);
+    expect(stations[0].economyType).toBe('unknown');
+  });
+
+  it('rejects a wealth value outside 0-3 at the schema level', () => {
+    const s = { ...validStation, wealth: 5 };
+    const file = { format: 'nms-companion', version: 1, exportedAt: '', stations: [s] };
+    expect(() => BackupFileSchema.parse(file)).toThrow();
+  });
 });

@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { X, Plus, Trash2 } from 'lucide-react';
-import type { Station, StationDraft, SaveState } from '@/types';
+import { X, Plus, Trash2, Bookmark } from 'lucide-react';
+import type { Station, StationDraft, SaveState, WealthRating } from '@/types';
 import { GUILDS } from '@/constants/guilds';
 import { RACES } from '@/constants/races';
 import { REWARDS } from '@/constants/rewards';
 import { STATION_TYPES } from '@/constants/stationTypes';
+import { ECONOMY_TYPES } from '@/constants/economyTypes';
 import { isDuplicateName } from '@/utils/normalise';
 import { DuplicateWarning } from './DuplicateWarning';
 import { SaveIndicator } from '../ui/SaveIndicator';
@@ -61,7 +62,7 @@ export function StationForm({
               type="text"
               value={draft.name}
               onChange={e => onFieldChange('name', e.target.value)}
-              className="w-full bg-input border border-border rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              className="w-full h-11 bg-input border border-border rounded-lg px-4 text-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               placeholder="e.g. Odyalutai Terminus"
               autoFocus
             />
@@ -77,7 +78,7 @@ export function StationForm({
                   <button
                     key={t.id}
                     onClick={() => onFieldChange('stationType', t.id)}
-                    className={`px-3 py-2 rounded-lg border text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
+                    className={`h-11 px-3 rounded-lg border text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
                       isSelected
                         ? isOutlaw
                           ? 'bg-destructive/20 border-destructive text-destructive'
@@ -133,9 +134,60 @@ export function StationForm({
           </div>
         </div>
 
+        {/* Economy: Type & Wealth */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Economy</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Type</label>
+              <select
+                value={draft.economyType}
+                onChange={e => onFieldChange('economyType', e.target.value as StationDraft['economyType'])}
+                className="w-full h-[46px] bg-input border border-border rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                {ECONOMY_TYPES.map(e => (
+                  <option key={e.id} value={e.id}>{e.icon} {e.label}</option>
+                ))}
+              </select>
+              <p className="text-xs text-muted-foreground">Full list of meanings is in the Key on the main page.</p>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Wealth</label>
+              <div className="flex items-center gap-2 h-[46px]">
+                {([1, 2, 3] as WealthRating[]).map(n => (
+                  <button
+                    key={n}
+                    onClick={() => onFieldChange('wealth', n)}
+                    aria-label={`Set wealth to ${n} star${n > 1 ? 's' : ''}`}
+                    aria-pressed={draft.wealth >= n}
+                    className={`w-10 h-10 rounded-lg border text-lg flex items-center justify-center transition-colors ${
+                      draft.wealth >= n
+                        ? 'bg-accent/10 border-accent/50 text-accent'
+                        : 'bg-input border-border text-muted-foreground hover:border-accent/50'
+                    }`}
+                  >
+                    ★
+                  </button>
+                ))}
+                {draft.wealth > 0 && (
+                  <button
+                    onClick={() => onFieldChange('wealth', 0)}
+                    className="text-xs text-muted-foreground underline ml-1"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Favourite */}
         <label className="flex items-center justify-between p-4 bg-input border border-border rounded-lg cursor-pointer hover:border-primary/50 transition-colors">
-          <span className="font-medium">Mark as Favourite</span>
+          <span className="font-medium flex items-center gap-2">
+            <Bookmark className={`w-4 h-4 ${draft.favourite ? 'fill-accent text-accent' : 'text-muted-foreground'}`} />
+            Mark as Favourite
+          </span>
           <div className={`relative w-12 h-6 rounded-full transition-colors ${draft.favourite ? 'bg-accent' : 'bg-muted'}`}>
             <div className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${draft.favourite ? 'translate-x-6' : 'translate-x-0'}`} />
           </div>

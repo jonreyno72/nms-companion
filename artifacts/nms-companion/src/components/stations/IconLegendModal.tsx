@@ -1,8 +1,9 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { X, Bookmark } from 'lucide-react';
 import { GUILDS } from '@/constants/guilds';
 import { RACES } from '@/constants/races';
 import { REWARDS } from '@/constants/rewards';
+import { ECONOMY_TYPES } from '@/constants/economyTypes';
 
 interface Props {
   open: boolean;
@@ -74,11 +75,44 @@ export function IconLegendModal({ open, onClose }: Props) {
 
           <div>
             <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
-              Row Colours
+              Economy Type Icons
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+              {ECONOMY_TYPES.map(e => (
+                <div key={e.id} className="flex items-start gap-2 text-sm">
+                  <span className="w-6 text-center shrink-0">{e.icon}</span>
+                  <span>
+                    {e.label}
+                    {e.id !== 'unknown' && (
+                      <span className="block text-xs text-muted-foreground">{e.description}</span>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+              Wealth
+            </h3>
+            <div className="flex items-start gap-2 text-sm">
+              <span className="w-6 text-center shrink-0 text-accent">★★★</span>
+              <span>1 to 3 stars, set per-station on the edit screen. Optional — stations with nothing set show no stars, and can be filtered separately via "No information set".</span>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+              Row Indicators
             </h3>
             <div className="flex items-center gap-2 text-sm">
               <span className="w-6 h-6 rounded bg-destructive/20 border border-destructive/60 shrink-0" />
               Deep red row = Outlaw Station
+            </div>
+            <div className="flex items-center gap-2 text-sm mt-2">
+              <Bookmark className="w-6 h-6 fill-accent text-accent shrink-0" />
+              Filled bookmark = marked as Favourite
             </div>
           </div>
         </div>

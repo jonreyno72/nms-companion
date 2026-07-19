@@ -10,14 +10,14 @@ interface Props {
 
 export function FilterBar({ filters, onChange }: Props) {
   const isDefault = filters.guildFilter === 'all' && !filters.favouritesOnly
-    && !filters.outlawOnly && !filters.exosuitNotPurchasedOnly;
+    && !filters.outlawOnly && !filters.exosuitNotPurchasedOnly && filters.wealthFilter === 'all';
 
   return (
     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide shrink-0">
       <button
         onClick={() => onChange({
           ...filters, guildFilter: 'all', favouritesOnly: false,
-          outlawOnly: false, exosuitNotPurchasedOnly: false,
+          outlawOnly: false, exosuitNotPurchasedOnly: false, wealthFilter: 'all',
         })}
         aria-pressed={isDefault}
         className={`touch-target px-4 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
@@ -79,6 +79,23 @@ export function FilterBar({ filters, onChange }: Props) {
       >
         🧥 Exosuit Not Purchased
       </button>
+
+      <select
+        value={filters.wealthFilter}
+        onChange={e => onChange({ ...filters, wealthFilter: e.target.value as FilterState['wealthFilter'] })}
+        aria-label="Filter by wealth"
+        className={`touch-target px-4 rounded-full text-sm font-medium whitespace-nowrap border-none shrink-0 ${
+          filters.wealthFilter !== 'all'
+            ? 'bg-accent text-accent-foreground'
+            : 'bg-muted text-muted-foreground'
+        }`}
+      >
+        <option value="all">Wealth: All</option>
+        <option value="3">★★★ (3)</option>
+        <option value="2">★★☆ (2)</option>
+        <option value="1">★☆☆ (1)</option>
+        <option value="none">No information set</option>
+      </select>
     </div>
   );
 }

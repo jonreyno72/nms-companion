@@ -24,7 +24,7 @@ function App() {
   const [legendOpen, setLegendOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     searchQuery: '', guildFilter: 'all', favouritesOnly: false,
-    outlawOnly: false, exosuitNotPurchasedOnly: false,
+    outlawOnly: false, exosuitNotPurchasedOnly: false, wealthFilter: 'all',
   });
   
   const { stations, loading, reload } = useStations();

@@ -1,10 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, Edit2, Trash2 } from 'lucide-react';
+import { Bookmark, Edit2, Trash2 } from 'lucide-react';
 import type { Station } from '@/types';
 import { GUILD_MAP } from '@/constants/guilds';
 import { RACE_MAP } from '@/constants/races';
 import { REWARD_MAP } from '@/constants/rewards';
+import { ECONOMY_TYPE_MAP } from '@/constants/economyTypes';
 
 interface Props {
   station: Station;
@@ -16,6 +17,7 @@ interface Props {
 export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Props) {
   const guild = GUILD_MAP[station.guildId];
   const race = RACE_MAP[station.raceId];
+  const economy = ECONOMY_TYPE_MAP[station.economyType];
   const isOutlaw = station.stationType === 'outlaw';
 
   return (
@@ -38,7 +40,7 @@ export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Pro
         aria-label={station.favourite ? "Remove from favourites" : "Add to favourites"}
         aria-pressed={station.favourite}
       >
-        <Star className={`w-6 h-6 ${station.favourite ? 'fill-accent text-accent' : ''}`} />
+        <Bookmark className={`w-6 h-6 ${station.favourite ? 'fill-accent text-accent' : ''}`} />
       </button>
 
       <div className="flex-1 min-w-0 flex flex-col gap-1 cursor-pointer" onClick={() => onEdit(station)}>
@@ -49,6 +51,11 @@ export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Pro
           {isOutlaw && (
             <span className="shrink-0 text-[10px] font-bold tracking-wide px-1.5 py-0.5 rounded bg-destructive/30 border border-destructive text-red-200">
               OUTLAW
+            </span>
+          )}
+          {economy && economy.id !== 'unknown' && (
+            <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+              {economy.icon} {economy.label}
             </span>
           )}
         </div>
@@ -62,6 +69,11 @@ export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Pro
           {race && race.id !== 'unknown' && (
             <span className="inline-flex items-center gap-1 text-xs">
               {race.icon} {race.label}
+            </span>
+          )}
+          {station.wealth > 0 && (
+            <span className="inline-flex items-center text-xs text-accent" aria-label={`Wealth: ${station.wealth} star${station.wealth > 1 ? 's' : ''}`}>
+              {'★'.repeat(station.wealth)}{'☆'.repeat(3 - station.wealth)}
             </span>
           )}
         </div>
