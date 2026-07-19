@@ -11,9 +11,12 @@ export type EconomyTypeId =
   | 'trading'
   | 'advanced_materials'
   | 'scientific';
-/** 0 = not set. 1-3 = wealth rating. Kept as a plain number rather than a
- * boolean tuple so it can be compared/filtered like the star count it represents. */
-export type WealthRating = 0 | 1 | 2 | 3;
+/** 0 = not set. 1-3 = star wealth rating (Weak/Average/Strong economy).
+ * 4 = Outlaw System — a distinct classification from the community NMS
+ * Economy Guide that doesn't get a star rating at all. Mutually exclusive
+ * with 1-3: a station is either rated on stars or marked Outlaw System,
+ * never both, since both live in the same field. */
+export type WealthRating = 0 | 1 | 2 | 3 | 4;
 
 // Rewards:
 //   storage_augmentation   = expands STARSHIP inventory
@@ -33,7 +36,7 @@ export interface GuildDef  { id: GuildId;  label: string; icon: string; color: s
 export interface RaceDef   { id: RaceId;   label: string; icon: string; }
 export interface RewardDef { id: RewardId; label: string; shortLabel: string; icon: string; }
 export interface EconomyTypeDef { id: EconomyTypeId; label: string; icon: string; themes: string[]; }
-export interface WealthTierDef { stars: 1 | 2 | 3; label: string; tier: string; terms: string[]; }
+export interface WealthTierDef { stars: 1 | 2 | 3 | 4; label: string; tier: string; terms: string[]; icon?: string; }
 
 // ─── Core entity ────────────────────────────────────────────────────────────────
 export interface Station {
@@ -110,8 +113,8 @@ export interface FilterState {
   favouritesOnly: boolean;
   outlawOnly: boolean;
   exosuitNotPurchasedOnly: boolean;
-  /** 'all' = no wealth filter. '1'/'2'/'3' = exact match. 'none' = wealth not set (0). */
-  wealthFilter: 'all' | '1' | '2' | '3' | 'none';
+  /** 'all' = no wealth filter. '1'/'2'/'3'/'4' = exact match (4 = Outlaw System). 'none' = wealth not set (0). */
+  wealthFilter: 'all' | '1' | '2' | '3' | '4' | 'none';
 }
 
 // ─── App settings (persisted separately from stations) ────────────────────────

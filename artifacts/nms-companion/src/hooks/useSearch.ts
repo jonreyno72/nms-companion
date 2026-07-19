@@ -20,7 +20,7 @@ export function useSearch(stations: Station[], filters: FilterState): Station[] 
 
       // Wealth filter (exact match; 'none' means wealth not set)
       if (filters.wealthFilter === 'none' && station.wealth !== 0) return false;
-      if (['1', '2', '3'].includes(filters.wealthFilter) && String(station.wealth) !== filters.wealthFilter) return false;
+      if (['1', '2', '3', '4'].includes(filters.wealthFilter) && String(station.wealth) !== filters.wealthFilter) return false;
 
       // Guild filter
       if (filters.guildFilter !== 'all' && station.guildId !== filters.guildFilter) return false;

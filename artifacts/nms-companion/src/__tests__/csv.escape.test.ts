@@ -89,6 +89,12 @@ describe('CSV Export', () => {
       expect(dataRow).toContain('Not set');
     });
 
+    it('CSV output shows "Outlaw System" for wealth value 4', () => {
+      const csv = stationsToCsv([{ ...testStations[0], wealth: 4 }]);
+      const dataRow = csv.split('\n')[1];
+      expect(dataRow).toContain('Outlaw System');
+    });
+
     it('CSV output uses display labels not IDs for guild and race', () => {
       const csv = stationsToCsv(testStations);
       const dataRow = csv.split('\n')[1];

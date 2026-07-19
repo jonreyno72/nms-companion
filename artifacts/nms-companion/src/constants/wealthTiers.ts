@@ -13,4 +13,8 @@ export const WEALTH_TIERS: WealthTierDef[] = [
     stars: 3, label: 'Strong Economy', tier: 'T3 economies',
     terms: ['Advanced', 'Affluent', 'Booming', 'Flourishing', 'High Supply', 'Opulent', 'Prosperous', 'Wealthy'],
   },
+  {
+    stars: 4, label: 'Outlaw System', tier: 'No star rating — classified separately',
+    terms: [], icon: '💀',
+  },
 ];

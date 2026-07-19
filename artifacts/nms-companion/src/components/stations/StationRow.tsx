@@ -32,7 +32,7 @@ export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Pro
           : 'bg-card border-border hover:border-primary/50'
       }`}
       role="listitem"
-      aria-label={`${station.name}, ${guild?.label || 'Unknown'} station${isOutlaw ? ', Outlaw Station' : ''}`}
+      aria-label={isOutlaw ? `${station.name}, Outlaw Station` : `${station.name}, ${guild?.label || 'Unknown'} station`}
     >
       <button
         onClick={() => onToggleFavourite(station)}
@@ -61,17 +61,23 @@ export function StationRow({ station, onEdit, onDelete, onToggleFavourite }: Pro
         </div>
         
         <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
-          {guild && (
+          {/* Dominant Guild and System Race don't apply to Outlaw Stations */}
+          {!isOutlaw && guild && (
             <span className="inline-flex items-center gap-1 text-xs font-medium px-1.5 py-0.5 rounded bg-muted">
               {guild.icon} {guild.label}
             </span>
           )}
-          {race && race.id !== 'unknown' && (
+          {!isOutlaw && race && race.id !== 'unknown' && (
             <span className="inline-flex items-center gap-1 text-xs">
               {race.icon} {race.label}
             </span>
           )}
-          {station.wealth > 0 && (
+          {station.wealth === 4 && (
+            <span className="inline-flex items-center text-xs" aria-label="Wealth: Outlaw System">
+              💀
+            </span>
+          )}
+          {station.wealth >= 1 && station.wealth <= 3 && (
             <span className="inline-flex items-center text-xs text-accent" aria-label={`Wealth: ${station.wealth} star${station.wealth > 1 ? 's' : ''}`}>
               {'★'.repeat(station.wealth)}{'☆'.repeat(3 - station.wealth)}
             </span>
